@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Bank Nifty Price</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f4f4f4; }
+        .price-box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px gray; display: inline-block; }
+        .price { font-size: 30px; font-weight: bold; }
+        .change { font-size: 20px; }
+        .trend { font-size: 18px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <h1>📊 Live Bank Nifty Price</h1>
+    <div class="price-box">
+        <p class="price">Loading...</p>
+        <p class="change"></p>
+        <p class="trend"></p>
+    </div>
+
+    <script>
+        async function fetchPrice() {
+            try {
+                let response = await fetch("http://127.0.0.1:5000/get_banknifty_price");
+                let data = await response.json();
+                
+                if (data.error) {
+                    document.querySelector(".price").textContent = "Error fetching data";
+                    return;
+                }
+
+                document.querySelector(".price").textContent = `₹${data.current_price}`;
+                document.querySelector(".change").textContent = `Change: ${data.change} points`;
+                document.querySelector(".trend").textContent = data.trend;
+
+            } catch (error) {
+                console.error("API error:", error);
+            }
+        }
+
+        // Har 5 second me update karega
+        fetchPrice();
+        setInterval(fetchPrice, 5000);
+    </script>
+
+</body>
+</html>
